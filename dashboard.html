@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Numerology Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/dashboard.css"/>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-auth.js"></script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="dash-sidebar" id="dash-sidebar">
+  <div class="ds-header">
+    <div class="ds-logo">
+      <svg viewBox="0 0 44 44" fill="none" width="30"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      <div><div class="ds-brand">Numerology Pro</div><div class="ds-sub">Professional Suite</div></div>
+    </div>
+  </div>
+  <nav class="ds-nav">
+    <span class="ds-section-lbl">Overview</span>
+    <button class="ds-item active" data-tab="profile"><span>⊞</span>My Profile</button>
+
+    <span class="ds-section-lbl">Name Analysis</span>
+    <button class="ds-item" data-tab="name-vibration"><span>✦</span>Name Vibration</button>
+    <button class="ds-item" data-tab="name-correction"><span>✎</span>Name Correction</button>
+    <button class="ds-item" data-tab="baby-name"><span>♡</span>Baby Names</button>
+    <button class="ds-item" data-tab="business-name"><span>⚑</span>Business Name</button>
+
+    <span class="ds-section-lbl">Number Analysis</span>
+    <button class="ds-item" data-tab="mobile-number"><span>◈</span>Mobile Number</button>
+    <button class="ds-item" data-tab="house-number"><span>⌂</span>House Number</button>
+    <button class="ds-item" data-tab="vehicle-number"><span>◎</span>Vehicle Number</button>
+
+    <span class="ds-section-lbl">Remedies</span>
+    <button class="ds-item" data-tab="gemstones"><span>◆</span>Gemstones</button>
+    <button class="ds-item" data-tab="crystals"><span>✧</span>Crystals</button>
+    <button class="ds-item" data-tab="rudraksha"><span>⊛</span>Rudraksha</button>
+    <button class="ds-item" data-tab="mantra"><span>☯</span>Mantra</button>
+    <button class="ds-item" data-tab="lucky-numbers"><span>★</span>Lucky Numbers</button>
+    <button class="ds-item" data-tab="colors"><span>◉</span>Color Therapy</button>
+
+    <span class="ds-section-lbl">Life Areas</span>
+    <button class="ds-item" data-tab="career"><span>◈</span>Career</button>
+    <button class="ds-item" data-tab="marriage"><span>◇</span>Marriage Compat.</button>
+    <button class="ds-item" data-tab="health"><span>✚</span>Health</button>
+    <button class="ds-item" data-tab="energy-balance"><span>∞</span>Energy Balance</button>
+  </nav>
+  <div class="ds-footer">
+    <div class="ds-user-info">
+      <div class="ds-avatar" id="ds-avatar">?</div>
+      <div><div class="ds-uname" id="ds-uname">Loading...</div><div class="ds-expiry" id="ds-expiry"></div></div>
+    </div>
+    <button class="ds-logout" onclick="MockAuth.logout()">Sign Out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="dash-main">
+  <!-- TOPBAR -->
+  <div class="dash-topbar">
+    <div class="dtb-left">
+      <button class="dash-menu-btn" onclick="toggleDashSidebar()">☰</button>
+      <h2 id="dash-page-title">My Profile</h2>
+    </div>
+    <div class="dtb-right">
+      <button class="btn-export-pdf" id="export-pdf-btn" onclick="exportResultPDF()" style="display:none;">
+        ↓ Export PDF
+      </button>
+      <span class="dtb-date" id="dtb-date"></span>
+    </div>
+  </div>
+
+  <!-- Module disabled notice -->
+  <div id="module-disabled-notice" style="display:none;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:8px;padding:10px 18px;margin:12px 24px 0;font-size:.84rem;font-weight:500;"></div>
+
+  <div class="dash-content" id="dash-content">
+
+    <!-- ══ PROFILE + LO SHU GRID ════════════════════════ -->
+    <div class="dash-tab active" id="tab-profile">
+
+      <!-- User info + subscription -->
+      <div class="profile-header">
+        <div class="profile-avatar" id="ph-avatar">K</div>
+        <div class="profile-info">
+          <h2 id="ph-name">—</h2>
+          <p id="ph-email">—</p>
+          <p id="ph-mobile">—</p>
+        </div>
+        <div class="profile-sub-card" id="ph-sub">
+          <div class="psc-label">Subscription</div>
+          <div class="psc-status" id="psc-status">—</div>
+          <div class="psc-expiry" id="psc-expiry">—</div>
+        </div>
+      </div>
+
+      <!-- LO SHU GRID SECTION -->
+      <div class="dash-card">
+        <div class="dc-header">
+          <div>
+            <h3>Lo Shu Grid Analysis</h3>
+            <p>Enter date of birth to generate your personal Lo Shu Grid</p>
+          </div>
+        </div>
+        <div class="grid-input-row">
+          <div class="fgroup" style="flex:1;">
+            <label>Full Name</label>
+            <input type="text" id="lsg-name" placeholder="Your full name"/>
+          </div>
+          <div class="fgroup">
+            <label>Date of Birth *</label>
+            <input type="date" id="lsg-dob"/>
+          </div>
+          <button class="btn-dash" onclick="generateLoShu()">Generate Grid</button>
+        </div>
+        <div id="loshu-result" style="display:none;">
+
+          <!-- Core Numbers Row -->
+          <div class="core-numbers-row" id="core-nums-row"></div>
+
+          <!-- Grid + Planes side by side -->
+          <div class="loshu-layout">
+
+            <!-- The 3x3 Grid -->
+            <div class="loshu-grid-wrap">
+              <div class="loshu-title">Your Lo Shu Grid</div>
+              <div class="loshu-grid" id="loshu-grid"></div>
+              <div class="loshu-legend">
+                <span class="ls-present">■ Present</span>
+                <span class="ls-missing">□ Missing</span>
+                <span class="ls-repeated">▣ Repeated</span>
+              </div>
+            </div>
+
+            <!-- Planes & Arrows -->
+            <div class="loshu-planes">
+              <div class="loshu-title">Grid Planes</div>
+              <div class="plane-list" id="plane-list"></div>
+            </div>
+          </div>
+
+          <!-- Missing Numbers Analysis -->
+          <div class="missing-section" id="missing-section"></div>
+
+          <!-- Present Numbers Meaning -->
+          <div class="present-section" id="present-section"></div>
+
+          <!-- Repeated Numbers -->
+          <div id="repeated-section"></div>
+
+        </div>
+      </div>
+
+      <!-- Quick profile card -->
+      <div class="dash-card" id="quick-profile-card" style="display:none;">
+        <div class="dc-header"><h3>Your Numerology Profile</h3></div>
+        <div class="profile-nums-grid" id="profile-nums-grid"></div>
+      </div>
+    </div>
+
+    <!-- Other tabs (loaded from numerology modules) -->
+    <div class="dash-tab" id="tab-name-vibration"></div>
+    <div class="dash-tab" id="tab-name-correction"></div>
+    <div class="dash-tab" id="tab-baby-name"></div>
+    <div class="dash-tab" id="tab-business-name"></div>
+    <div class="dash-tab" id="tab-mobile-number"></div>
+    <div class="dash-tab" id="tab-house-number"></div>
+    <div class="dash-tab" id="tab-vehicle-number"></div>
+    <div class="dash-tab" id="tab-gemstones"></div>
+    <div class="dash-tab" id="tab-crystals"></div>
+    <div class="dash-tab" id="tab-rudraksha"></div>
+    <div class="dash-tab" id="tab-mantra"></div>
+    <div class="dash-tab" id="tab-lucky-numbers"></div>
+    <div class="dash-tab" id="tab-colors"></div>
+    <div class="dash-tab" id="tab-career"></div>
+    <div class="dash-tab" id="tab-marriage"></div>
+    <div class="dash-tab" id="tab-health"></div>
+    <div class="dash-tab" id="tab-energy-balance"></div>
+
+  </div>
+</main>
+
+<div id="dash-overlay" onclick="closeDashSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;"></div>
+
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-auth.js"></script>
+<script src="js/loshu.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+(async () => {
+  auth.onAuthStateChanged(async firebaseUser => {
+    if (!firebaseUser) {
+      localStorage.removeItem('np_user');
+      window.location.href = 'login.html'; return;
+    }
+    const user = await MockAuth.refreshUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+    if (MockAuth.isAdmin(user)) { window.location.href = 'admin.html'; return; }
+    const s = MockAuth.getStatus(user);
+    if (s === 'blocked') { await auth.signOut(); window.location.href = 'login.html'; return; }
+    if (s !== 'active')  { window.location.href = 'payment.html'; return; }
+    // All good — hide loader and show dashboard
+    const _l = document.getElementById('app-loader');
+    if (_l) { _l.classList.add('hide'); setTimeout(()=>_l.remove(),350); }
+    // Welcome banner
+    if (new URLSearchParams(window.location.search).get('welcome')==='1') {
+      const b=document.createElement('div');
+      b.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#065f46;color:#fff;padding:12px 28px;border-radius:10px;font-size:.85rem;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
+      b.textContent='🎉 Subscription active! Welcome to Numerology Pro.';
+      document.body.appendChild(b);
+      setTimeout(()=>b.remove(),5000);
+      window.history.replaceState({},'','dashboard.html');
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Activate Subscription — Numerology Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/payment.css"/>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-auth.js"></script>
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+<style>
+#app-loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .3s;}
+#app-loader.hide{opacity:0;pointer-events:none;}
+.al-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.al-logo svg{width:36px;}
+.al-logo span{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#111827;}
+.al-spin{width:32px;height:32px;border:3px solid #e5e1d8;border-top-color:#C0392B;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<div id="app-loader">
+  <div class="al-logo">
+    <svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+    <span>Numerology Pro</span>
+  </div>
+  <div class="al-spin"></div>
+</div>
+<div class="pay-page">
+
+  <!-- LEFT — Plan Details -->
+  <div class="pay-left">
+    <div class="pay-logo">
+      <svg viewBox="0 0 44 44" fill="none" width="32"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      <span>Numerology Pro</span>
+    </div>
+    <h2>Activate Your Subscription</h2>
+    <p>Get full access to all 26+ numerology modules, Lo Shu Grid, unlimited PDF reports and complete spiritual guidance.</p>
+
+    <div class="plan-box">
+      <div class="plan-name">Professional Annual Plan</div>
+      <div class="plan-price">
+        <span class="plan-cur">&#8377;</span>
+        <span class="plan-amt" id="pay-price">1,000</span>
+        <span class="plan-per">/year</span>
+      </div>
+      <div class="plan-saving">Save 60% vs monthly</div>
+    </div>
+
+    <div class="plan-features">
+      <div class="pf-item"><span>&#10003;</span>All 26+ numerology modules</div>
+      <div class="pf-item"><span>&#10003;</span>Lo Shu Grid analysis</div>
+      <div class="pf-item"><span>&#10003;</span>Unlimited PDF report exports</div>
+      <div class="pf-item"><span>&#10003;</span>Name, number &amp; vibration analysis</div>
+      <div class="pf-item"><span>&#10003;</span>Gemstone, crystal &amp; Rudraksha guidance</div>
+      <div class="pf-item"><span>&#10003;</span>Marriage compatibility &amp; remedies</div>
+      <div class="pf-item"><span>&#10003;</span>90-day personalised action plan</div>
+      <div class="pf-item"><span>&#10003;</span>Complete energy balancing system</div>
+    </div>
+
+    <div class="pay-guarantee">
+      <span>&#128274;</span>
+      <p>7-day money-back guarantee. Not satisfied? Full refund, no questions asked.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT — Payment -->
+  <div class="pay-right">
+    <div class="pay-card">
+
+      <!-- User Info -->
+      <div class="pay-user-info" id="pay-user-info">
+        <div class="pui-label">Paying as</div>
+        <div class="pui-name" id="pui-name">Loading...</div>
+        <div class="pui-email" id="pui-email">Loading...</div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="os-row"><span>Professional Annual Plan</span><span id="os-price">&#8377;1,000</span></div>
+        <div class="os-row" id="discount-row" style="display:none;color:#065f46;"><span>Discount (<span id="coupon-name"></span>)</span><span id="discount-amt"></span></div>
+        <div class="os-divider"></div>
+        <div class="os-row os-total"><span>Total</span><span id="os-total">&#8377;1,000</span></div>
+      </div>
+
+      <!-- Coupon -->
+      <div class="coupon-row">
+        <input type="text" id="coupon-inp" placeholder="Have a coupon code?"/>
+        <button onclick="applyCoupon()">Apply</button>
+      </div>
+      <div class="coupon-msg" id="coupon-msg"></div>
+
+      <!-- Pay Button -->
+      <button class="btn-pay" id="pay-btn" onclick="startPayment()">
+        <span id="pay-btn-txt">Pay &#8377;<span id="pay-btn-amt">1,000</span> &amp; Activate</span>
+      </button>
+
+      <div class="pay-secure">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secured by Razorpay &nbsp;&#183;&nbsp; SSL Encrypted
+      </div>
+
+      <!-- Already have access -->
+      <div class="pay-alt-actions">
+        <a href="dashboard.html">I already have access &#8594;</a>
+        <a href="login.html" onclick="MockAuth.logout()">Sign out</a>
+      </div>
+    </div>
+
+    <!-- Free Access Note -->
+    <div class="free-access-note" id="free-access-note" style="display:none;">
+      <div class="fan-icon">&#127881;</div>
+      <div class="fan-title">You have free access!</div>
+      <div class="fan-desc">Admin has granted you access until <strong id="fan-expiry"></strong>.</div>
+      <a href="dashboard.html" class="btn-pay" style="text-decoration:none;text-align:center;display:block;margin-top:16px;">Go to Dashboard &#8594;</a>
+    </div>
+
+    <div class="pay-footer">
+      Numerology Pro &nbsp;&#183;&nbsp; 8421427605 &nbsp;&#183;&nbsp; deotigharekaustubh@gmail.com
+    </div>
+  </div>
+
+</div>
+
+<script>
+let paymentAmount = 1000;
+let finalAmount   = 1000;
+let couponApplied = null;
+let currentUser   = null;
+
+/* ── Init ─────────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  auth.onAuthStateChanged(async firebaseUser => {
+    if (!firebaseUser) { window.location.href = 'login.html'; return; }
+    currentUser = await MockAuth.refreshUser();
+    if (!currentUser) { window.location.href = 'login.html'; return; }
+    if (MockAuth.isAdmin(currentUser)) { window.location.href = 'admin.html'; return; }
+    const status = MockAuth.getStatus(currentUser);
+    if (status === 'active') {
+      if (currentUser.accessGrantedManually) {
+        const _l=document.getElementById('app-loader');
+        if(_l){_l.classList.add('hide');setTimeout(()=>_l.remove(),350);}
+        showGrantedAccess(currentUser); return;
+      }
+      window.location.href = 'dashboard.html'; return;
+    }
+    if (status === 'blocked') { await auth.signOut(); window.location.href = 'login.html'; return; }
+    // Show payment page — hide loader
+    const _l=document.getElementById('app-loader');
+    if(_l){_l.classList.add('hide');setTimeout(()=>_l.remove(),350);}
+
+  // Load user info
+  document.getElementById('pui-name').textContent  = currentUser.displayName || 'User';
+  document.getElementById('pui-email').textContent = currentUser.email;
+
+  // Load pricing from config
+  const pricing = await MockConfig.getPricing();
+  paymentAmount = pricing.annual || 1000;
+  finalAmount   = paymentAmount;
+  updatePriceDisplay(finalAmount);
+});
+
+function showGrantedAccess(user) {
+  document.getElementById('pay-left').style.display   = 'none';
+  document.getElementById('pay-card').style.display   = 'none';
+  document.getElementById('free-access-note').style.display = 'block';
+  const exp = user.subscriptionExpiry?.toDate
+    ? user.subscriptionExpiry.toDate()
+    : new Date(user.subscriptionExpiry);
+  document.getElementById('fan-expiry').textContent = exp.toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+function updatePriceDisplay(amount) {
+  const fmt = amount.toLocaleString('en-IN');
+  document.getElementById('pay-price').textContent    = fmt;
+  document.getElementById('os-price').textContent     = '₹' + fmt;
+  document.getElementById('os-total').textContent     = '₹' + fmt;
+  document.getElementById('pay-btn-amt').textContent  = fmt;
+}
+
+/* ── Coupon ───────────────────────────────────────────── */
+async function applyCoupon() {
+  const code = document.getElementById('coupon-inp').value.trim().toUpperCase();
+  const msg  = document.getElementById('coupon-msg');
+  if (!code) { msg.textContent = 'Please enter a coupon code.'; msg.className = 'coupon-msg err'; return; }
+
+  const pricing = await MockConfig.getPricing();
+  if (pricing.couponCode && pricing.couponCode.toUpperCase() === code && pricing.discountPct > 0) {
+    const disc   = Math.round(paymentAmount * pricing.discountPct / 100);
+    finalAmount  = paymentAmount - disc;
+    couponApplied = { code, disc, pct: pricing.discountPct };
+    // Show discount row
+    document.getElementById('discount-row').style.display = '';
+    document.getElementById('coupon-name').textContent    = code + ' (' + pricing.discountPct + '% off)';
+    document.getElementById('discount-amt').textContent   = '- ₹' + disc.toLocaleString('en-IN');
+    document.getElementById('os-total').textContent       = '₹' + finalAmount.toLocaleString('en-IN');
+    document.getElementById('pay-btn-amt').textContent    = finalAmount.toLocaleString('en-IN');
+    msg.textContent = '✅ Coupon applied! You save ₹' + disc.toLocaleString('en-IN');
+    msg.className = 'coupon-msg ok';
+  } else {
+    msg.textContent = 'Invalid coupon code.';
+    msg.className = 'coupon-msg err';
+  }
+}
+
+/* ── Start Razorpay Payment ───────────────────────────── */
+async function startPayment() {
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  document.getElementById('pay-btn-txt').innerHTML = 'Opening Payment...';
+
+  // Load Razorpay config
+  const rzpCfg = await MockConfig.getRazorpay();
+  const appCfg = await MockConfig.getApp();
+
+  if (!rzpCfg || !rzpCfg.keyId) {
+    // No Razorpay configured — show contact message
+    btn.disabled = false;
+    document.getElementById('pay-btn-txt').innerHTML = 'Pay &#8377;<span id="pay-btn-amt">' + finalAmount.toLocaleString('en-IN') + '</span> &amp; Activate';
+    showNoGatewayMsg();
+    return;
+  }
+
+  const options = {
+    key:         rzpCfg.keyId,
+    amount:      finalAmount * 100, // paise
+    currency:    'INR',
+    name:        appCfg.appName || 'Numerology Pro',
+    description: 'Annual Subscription — Numerology Pro',
+    image:       appCfg.logo || '',
+    prefill: {
+      name:  currentUser.displayName || '',
+      email: currentUser.email,
+      contact: currentUser.mobile || ''
+    },
+    theme: { color: '#C0392B' },
+    modal: {
+      ondismiss: () => {
+        btn.disabled = false;
+        document.getElementById('pay-btn-txt').innerHTML = 'Pay &#8377;<span id="pay-btn-amt">' + finalAmount.toLocaleString('en-IN') + '</span> &amp; Activate';
+      }
+    },
+    handler: async (response) => {
+      await onPaymentSuccess(response);
+    }
+  };
+
+  try {
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } catch(e) {
+    btn.disabled = false;
+    document.getElementById('pay-btn-txt').innerHTML = 'Pay &#8377;<span>' + finalAmount.toLocaleString('en-IN') + '</span> &amp; Activate';
+    alert('Payment gateway error: ' + e.message);
+  }
+}
+
+/* ── Payment Success ──────────────────────────────────── */
+async function onPaymentSuccess(response) {
+  document.getElementById('pay-btn-txt').innerHTML = '&#9989; Activating...';
+
+  try {
+    // Activate subscription for 365 days
+    const exp = new Date();
+    exp.setDate(exp.getDate() + 365);
+
+    await db.collection('users').doc(currentUser.uid).update({
+      subscriptionActive: true,
+      subscriptionPlan:   'annual',
+      subscriptionExpiry: firebase.firestore.Timestamp.fromDate(exp),
+      subscriptionStart:  firebase.firestore.FieldValue.serverTimestamp(),
+      lastPaymentId:      response.razorpay_payment_id
+    });
+
+    // Log payment
+    await db.collection('payments').add({
+      userId:      currentUser.uid,
+      userEmail:   currentUser.email,
+      userName:    currentUser.displayName || '',
+      amount:      finalAmount,
+      paymentId:   response.razorpay_payment_id,
+      plan:        'annual',
+      coupon:      couponApplied ? couponApplied.code : null,
+      status:      'success',
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Refresh session
+    await MockAuth.refreshUser();
+
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html?welcome=1';
+
+  } catch(e) {
+    console.error('Activation error:', e);
+    alert('Payment received! Contact support to activate: deotigharekaustubh@gmail.com\nPayment ID: ' + response.razorpay_payment_id);
+  }
+}
+
+/* ── No Gateway Message ───────────────────────────────── */
+function showNoGatewayMsg() {
+  const card = document.getElementById('pay-card');
+  card.innerHTML += `
+    <div style="margin-top:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;font-size:.84rem;color:#92400e;line-height:1.6;">
+      <strong>Payment gateway not configured yet.</strong><br/>
+      To pay and activate, contact us directly:<br/><br/>
+      <strong>WhatsApp:</strong> 8421427605<br/>
+      <strong>Email:</strong> deotigharekaustubh@gmail.com<br/><br/>
+      Once payment is confirmed, your account will be manually activated.
+    </div>`;
+}
+</script>
+</body>
+</html>

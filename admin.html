@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Numerology Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/admin.css"/>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-auth.js"></script>
+</head>
+<body>
+
+<style>
+#app-loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .3s;}
+#app-loader.hide{opacity:0;pointer-events:none;}
+.al-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.al-logo svg{width:36px;}
+.al-logo span{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#111827;}
+.al-spin{width:32px;height:32px;border:3px solid #e5e1d8;border-top-color:#C0392B;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<div id="app-loader">
+  <div class="al-logo">
+    <svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+    <span>Numerology Pro</span>
+  </div>
+  <div class="al-spin"></div>
+</div>
+<div class="asb-overlay" id="asb-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="asb" id="asb">
+  <div class="asb-head">
+    <div class="asb-logo">
+      <svg viewBox="0 0 44 44" fill="none" width="30"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      <div><div class="asb-brand">Numerology Pro</div><div class="asb-role">Admin Panel</div></div>
+    </div>
+  </div>
+
+  <nav class="asb-nav">
+    <div class="asb-grp">Dashboard</div>
+    <button class="asb-btn active" data-tab="overview"><span>&#9632;</span>Overview</button>
+
+    <div class="asb-grp">User Management</div>
+    <button class="asb-btn" data-tab="users"><span>&#128101;</span>All Users</button>
+    <button class="asb-btn" data-tab="grant"><span>&#128273;</span>Grant Access</button>
+    <button class="asb-btn" data-tab="subscriptions"><span>&#128179;</span>Subscriptions</button>
+
+    <div class="asb-grp">Configuration</div>
+    <button class="asb-btn" data-tab="pricing"><span>&#8377;</span>Pricing &amp; Plans</button>
+    <button class="asb-btn" data-tab="payment"><span>&#9881;</span>Payment Config</button>
+    <button class="asb-btn" data-tab="settings"><span>&#128295;</span>App Settings</button>
+
+    <div class="asb-grp">Content</div>
+    <button class="asb-btn" data-tab="modules"><span>&#9680;</span>Module Manager</button>
+    <button class="asb-btn" data-tab="policy"><span>&#128196;</span>Policy Editor</button>
+  </nav>
+
+  <div class="asb-foot">
+    <div class="asb-avatar-row">
+      <div class="asb-avatar" id="asb-avatar">A</div>
+      <div><div class="asb-name" id="asb-name">Admin</div><div class="asb-email" id="asb-email">Loading...</div></div>
+    </div>
+    <a href="index.html" class="asb-site-link">&#8592; View Website</a>
+    <button class="asb-logout" onclick="doAdminLogout()">Sign Out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="adm-main">
+  <header class="adm-bar">
+    <div class="adm-bar-l">
+      <button class="sb-toggle" onclick="toggleSidebar()">&#9776;</button>
+      <div><h1 id="pg-title">Overview</h1><p id="pg-sub">Numerology Pro Admin Dashboard</p></div>
+    </div>
+    <div class="adm-bar-r">
+      <div class="adm-clock" id="adm-clock"></div>
+      <div class="adm-badge">ADMIN</div>
+    </div>
+  </header>
+
+  <div class="adm-content">
+
+    <!-- ══ TAB: OVERVIEW ══════════════════════════════════════ -->
+    <div class="tab-pane active" id="tab-overview">
+
+      <div class="stat-grid">
+        <div class="stat-card blue"><div class="sc-icon">&#128101;</div><div class="sc-val" id="s-total">—</div><div class="sc-lbl">Total Users</div></div>
+        <div class="stat-card green"><div class="sc-icon">&#9989;</div><div class="sc-val" id="s-active">—</div><div class="sc-lbl">Active Subscriptions</div></div>
+        <div class="stat-card gold"><div class="sc-icon">&#9203;</div><div class="sc-val" id="s-pending">—</div><div class="sc-lbl">Pending Activation</div></div>
+        <div class="stat-card red"><div class="sc-icon">&#128683;</div><div class="sc-val" id="s-blocked">—</div><div class="sc-lbl">Blocked Users</div></div>
+        <div class="stat-card purple"><div class="sc-icon">&#128197;</div><div class="sc-val" id="s-expiring">—</div><div class="sc-lbl">Expiring in 7 Days</div></div>
+        <div class="stat-card dark"><div class="sc-icon">&#8377;</div><div class="sc-val" id="s-revenue">—</div><div class="sc-lbl">Total Revenue</div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="adm-card">
+          <div class="card-head"><h3>Recent Signups</h3><button class="lnk-btn" onclick="goTab('users')">View All &#8594;</button></div>
+          <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Status</th></tr></thead><tbody id="tb-recent"><tr><td colspan="4" class="tbl-mt">Loading...</td></tr></tbody></table></div>
+        </div>
+        <div class="adm-card">
+          <div class="card-head"><h3>Expiring Soon (7 days)</h3><button class="lnk-btn" onclick="goTab('subscriptions')">View All &#8594;</button></div>
+          <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>Name</th><th>Email</th><th>Expires</th><th>Action</th></tr></thead><tbody id="tb-expiring"><tr><td colspan="4" class="tbl-mt">Loading...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="adm-card" style="margin-top:20px;">
+        <div class="card-head"><h3>Quick Actions</h3></div>
+        <div class="quick-grid">
+          <button class="quick-btn" onclick="goTab('grant')">&#128273; Grant Access</button>
+          <button class="quick-btn" onclick="goTab('pricing')">&#8377; Update Pricing</button>
+          <button class="quick-btn" onclick="goTab('payment')">&#9881; Payment Setup</button>
+          <button class="quick-btn" onclick="goTab('users')">&#128101; Manage Users</button>
+          <button class="quick-btn" onclick="goTab('settings')">&#128295; App Settings</button>
+          <button class="quick-btn" onclick="goTab('policy')">&#128196; Edit Policies</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: USERS ═════════════════════════════════════════ -->
+    <div class="tab-pane" id="tab-users">
+      <div class="adm-card">
+        <div class="card-head">
+          <h3>All Users</h3>
+          <div class="card-actions">
+            <input type="text" class="srch" id="u-srch" placeholder="Search name or email..." oninput="filterUsers()"/>
+            <select class="flt" id="u-flt" onchange="filterUsers()">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="expired">Expired</option>
+              <option value="blocked">Blocked</option>
+              <option value="granted">Granted</option>
+            </select>
+            <button class="adm-btn" onclick="loadUsers()">&#8635; Refresh</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="adm-tbl">
+            <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Joined</th><th>Status</th><th>Expires</th><th>Plan</th><th>Actions</th></tr></thead>
+            <tbody id="tb-users"><tr><td colspan="8" class="tbl-mt">Loading users...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="tbl-foot" id="u-count"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: GRANT ACCESS ══════════════════════════════════ -->
+    <div class="tab-pane" id="tab-grant">
+      <div class="two-col">
+
+        <div class="adm-card">
+          <div class="card-head"><h3>&#128273; Grant Manual Access</h3></div>
+          <div class="fg">
+            <label>User Email <span class="req">*</span></label>
+            <input type="email" id="ga-email" placeholder="user@example.com"/>
+            <small>User must have already signed up on the platform</small>
+          </div>
+          <div class="fg">
+            <label>Access Duration <span class="req">*</span></label>
+            <div class="dur-row" id="dur-row">
+              <button class="dur active" data-d="7">7 Days</button>
+              <button class="dur" data-d="14">14 Days</button>
+              <button class="dur" data-d="30">30 Days</button>
+              <button class="dur" data-d="90">3 Months</button>
+              <button class="dur" data-d="180">6 Months</button>
+              <button class="dur" data-d="365">1 Year</button>
+              <button class="dur" data-d="custom">Custom</button>
+            </div>
+          </div>
+          <div class="fg" id="custom-day-row" style="display:none;">
+            <label>Custom Days</label>
+            <input type="number" id="ga-custom" placeholder="Enter number of days" min="1" max="3650"/>
+          </div>
+          <div class="fg">
+            <label>Note / Reason <small>(optional)</small></label>
+            <textarea id="ga-note" rows="2" placeholder="e.g. Trial, Partnership, Discount..."></textarea>
+          </div>
+          <button class="adm-btn-primary" id="ga-btn" onclick="doGrantAccess()"><span id="ga-txt">Grant Access &#8594;</span></button>
+          <div class="adm-msg" id="ga-msg"></div>
+        </div>
+
+        <div class="adm-card">
+          <div class="card-head"><h3>&#128101; Bulk Grant</h3></div>
+          <div class="fg">
+            <label>Email Addresses <small>(one per line)</small></label>
+            <textarea id="bulk-emails" rows="7" placeholder="user1@example.com&#10;user2@example.com&#10;user3@example.com"></textarea>
+          </div>
+          <div class="fg"><label>Days for All</label><input type="number" id="bulk-days" placeholder="e.g. 30" min="1"/></div>
+          <div class="fg"><label>Note <small>(optional)</small></label><input type="text" id="bulk-note" placeholder="Reason"/></div>
+          <button class="adm-btn-primary" onclick="doBulkGrant()"><span>Grant to All &#8594;</span></button>
+          <div class="adm-msg" id="bulk-msg"></div>
+        </div>
+      </div>
+
+      <div class="adm-card" style="margin-top:20px;">
+        <div class="card-head"><h3>Access Grant Log</h3><button class="adm-btn" onclick="loadGrantLog()">&#8635; Refresh</button></div>
+        <div class="tbl-wrap">
+          <table class="adm-tbl"><thead><tr><th>Email</th><th>Days</th><th>Note</th><th>Granted On</th><th>Expires</th><th>By</th></tr></thead>
+          <tbody id="tb-grants"><tr><td colspan="6" class="tbl-mt">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: SUBSCRIPTIONS ════════════════════════════════ -->
+    <div class="tab-pane" id="tab-subscriptions">
+      <div class="sub-pills" id="sub-pills"></div>
+      <div class="adm-card">
+        <div class="card-head">
+          <h3>All Subscriptions</h3>
+          <div class="card-actions">
+            <input type="text" class="srch" id="sub-srch" placeholder="Search..." oninput="filterSubs()"/>
+            <select class="flt" id="sub-flt" onchange="filterSubs()">
+              <option value="all">All</option><option value="active">Active</option>
+              <option value="expired">Expired</option><option value="granted">Granted</option>
+            </select>
+            <button class="adm-btn" onclick="loadSubscriptions()">&#8635; Refresh</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="adm-tbl">
+            <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Start</th><th>Expiry</th><th>Days Left</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tb-subs"><tr><td colspan="8" class="tbl-mt">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="adm-card" style="margin-top:20px;">
+        <div class="card-head"><h3>Payment History</h3></div>
+        <div class="tbl-wrap">
+          <table class="adm-tbl"><thead><tr><th>User Email</th><th>Amount</th><th>Payment ID</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="tb-payments"><tr><td colspan="5" class="tbl-mt">No payment records</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PRICING ══════════════════════════════════════ -->
+    <div class="tab-pane" id="tab-pricing">
+      <div class="pricing-live-bar" id="pricing-bar">
+        <div class="plb-item"><span>Annual Price</span><strong id="pb-annual">—</strong></div>
+        <div class="plb-item"><span>Monthly Price</span><strong id="pb-monthly">—</strong></div>
+        <div class="plb-item"><span>Trial Days</span><strong id="pb-trial">—</strong></div>
+        <div class="plb-item"><span>Report Limit</span><strong id="pb-reports">—</strong></div>
+        <div class="plb-item"><span>Refund Window</span><strong id="pb-refund">—</strong></div>
+        <div class="plb-item"><span>Last Updated</span><strong id="pb-updated">—</strong></div>
+      </div>
+      <div class="two-col">
+        <div class="adm-card">
+          <div class="card-head"><h3>&#8377; Update Pricing</h3></div>
+          <div class="fg"><label>Annual Price (&#8377;) <span class="req">*</span></label><input type="number" id="pr-annual" placeholder="e.g. 1000" min="1"/><small>Shown live on homepage automatically</small></div>
+          <div class="fg"><label>Monthly Price (&#8377;) <small>optional</small></label><input type="number" id="pr-monthly" placeholder="e.g. 149"/></div>
+          <div class="fg"><label>Free Trial Days</label><input type="number" id="pr-trial" placeholder="e.g. 7" min="0"/></div>
+          <div class="fg"><label>Max Reports / Month <small>(0 = Unlimited)</small></label><input type="number" id="pr-reports" placeholder="0" min="0"/></div>
+          <div class="fg"><label>Refund Window (days)</label><input type="number" id="pr-refund" placeholder="e.g. 7" min="0"/></div>
+          <div class="fg"><label>Discount Coupon Code</label><input type="text" id="pr-code" placeholder="e.g. WELCOME20"/></div>
+          <div class="fg"><label>Discount Percentage (%)</label><input type="number" id="pr-disc" placeholder="e.g. 20" min="0" max="100"/></div>
+          <button class="adm-btn-primary" onclick="doUpdatePricing()"><span>Save Pricing &#8594;</span></button>
+          <div class="adm-msg" id="pr-msg"></div>
+        </div>
+        <div class="adm-card">
+          <div class="card-head"><h3>Plan Features <small style="font-weight:400;color:#6b7280;">(shown on homepage)</small></h3></div>
+          <div class="fg"><label>Add Feature</label>
+            <div class="feat-add-row">
+              <input type="text" id="feat-inp" placeholder="e.g. Lo Shu Grid analysis and remedies" onkeydown="if(event.key==='Enter')addFeature()"/>
+              <button class="adm-btn" onclick="addFeature()">+ Add</button>
+            </div>
+          </div>
+          <div class="feat-tags" id="feat-tags"></div>
+          <button class="adm-btn-primary" style="margin-top:14px;" onclick="saveFeatures()"><span>Save Features &#8594;</span></button>
+          <div class="adm-msg" id="feat-msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PAYMENT CONFIG ═══════════════════════════════ -->
+    <div class="tab-pane" id="tab-payment">
+      <div class="two-col">
+        <div class="adm-card">
+          <div class="card-head"><h3>&#128176; Razorpay Configuration</h3><span class="badge-warn">Keep credentials private</span></div>
+          <div class="info-box info" style="margin-bottom:16px;">
+            <strong>Setup Steps:</strong><br/>
+            1. Visit <a href="https://dashboard.razorpay.com" target="_blank">dashboard.razorpay.com</a><br/>
+            2. Settings &#8594; API Keys &#8594; Generate Key<br/>
+            3. Paste Key ID and Secret below<br/>
+            4. Switch to Live Mode when ready for production
+          </div>
+          <div class="fg"><label>Razorpay Key ID <span class="req">*</span></label>
+            <div class="secret-row"><input type="password" id="rzp-key-id" placeholder="rzp_test_XXXXXXXXXX"/><button type="button" onclick="toggleSecret('rzp-key-id')">&#128065;</button></div>
+          </div>
+          <div class="fg"><label>Razorpay Key Secret <span class="req">*</span></label>
+            <div class="secret-row"><input type="password" id="rzp-secret" placeholder="Your key secret"/><button type="button" onclick="toggleSecret('rzp-secret')">&#128065;</button></div>
+          </div>
+          <div class="fg"><label>Webhook Secret <small>(for payment verification)</small></label>
+            <div class="secret-row"><input type="password" id="rzp-webhook" placeholder="Webhook secret from Razorpay dashboard"/><button type="button" onclick="toggleSecret('rzp-webhook')">&#128065;</button></div>
+            <small>Set at: Razorpay Dashboard &#8594; Webhooks &#8594; Add New Webhook</small>
+          </div>
+          <div class="fg"><label>Mode <span class="req">*</span></label>
+            <select id="rzp-mode">
+              <option value="test">&#127859; Test Mode (Sandbox)</option>
+              <option value="live">&#9889; Live Mode (Production)</option>
+            </select>
+            <small>&#9888; Switch to Live only after testing all payment flows</small>
+          </div>
+          <div class="fg"><label>Business Name (on payment popup)</label><input type="text" id="rzp-biz" placeholder="Numerology Pro"/></div>
+          <div class="fg"><label>Business Logo URL <small>optional</small></label><input type="url" id="rzp-logo" placeholder="https://your-site.com/logo.png"/></div>
+          <button class="adm-btn-primary" onclick="saveRazorpay()"><span>Save Payment Config &#8594;</span></button>
+          <div class="adm-msg" id="rzp-msg"></div>
+        </div>
+
+        <div>
+          <div class="adm-card" style="margin-bottom:20px;">
+            <div class="card-head"><h3>Gateway Status</h3></div>
+            <div class="gw-status" id="gw-status">
+              <div class="gw-dot" id="gw-dot"></div>
+              <span id="gw-txt">Loading configuration...</span>
+            </div>
+            <div class="info-box" id="gw-info" style="margin-top:12px;"></div>
+          </div>
+
+          <div class="adm-card" style="margin-bottom:20px;">
+            <div class="card-head"><h3>Webhook URL</h3></div>
+            <div class="info-box info">
+              <strong>Add this URL in Razorpay Dashboard &#8594; Webhooks:</strong><br/>
+              <code id="wh-url" style="font-size:.73rem;word-break:break-all;display:block;margin-top:6px;"></code>
+              <br/><strong>Events to enable:</strong><br/>
+              &#10003; payment.captured &nbsp; &#10003; payment.failed &nbsp; &#10003; subscription.activated
+            </div>
+          </div>
+
+          <div class="adm-card">
+            <div class="card-head"><h3>Test Card Details</h3></div>
+            <div class="info-box">
+              <strong>Card Number:</strong> 4111 1111 1111 1111<br/>
+              <strong>Expiry:</strong> Any future date (e.g. 12/26)<br/>
+              <strong>CVV:</strong> Any 3 digits (e.g. 123)<br/>
+              <strong>OTP:</strong> 1234
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-card" style="margin-top:20px;">
+        <div class="card-head"><h3>Payment Logs</h3><button class="adm-btn" onclick="loadPayments()">&#8635; Refresh</button></div>
+        <div class="tbl-wrap">
+          <table class="adm-tbl"><thead><tr><th>User Email</th><th>Amount</th><th>Payment ID</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="tb-pay"><tr><td colspan="5" class="tbl-mt">No payment logs</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: APP SETTINGS ══════════════════════════════════ -->
+    <div class="tab-pane" id="tab-settings">
+      <div class="two-col">
+        <div class="adm-card">
+          <div class="card-head"><h3>&#128295; General Configuration</h3></div>
+          <div class="fg"><label>Software Name <span class="req">*</span></label><input type="text" id="cfg-name" placeholder="Numerology Pro"/></div>
+          <div class="fg"><label>Tagline</label><input type="text" id="cfg-tag" placeholder="Professional Numerology Suite"/></div>
+          <div class="fg"><label>Admin Email <span class="req">*</span></label><input type="email" id="cfg-admin" placeholder="admin@numerologypro.com"/></div>
+          <div class="fg"><label>Contact Phone</label><input type="tel" id="cfg-phone" placeholder="8421427605"/></div>
+          <div class="fg"><label>Public Contact Email</label><input type="email" id="cfg-email" placeholder="support@numerologypro.com"/></div>
+          <div class="fg"><label>Website URL</label><input type="url" id="cfg-site" placeholder="https://numerologypro.com"/></div>
+          <div class="fg"><label>Support WhatsApp</label><input type="tel" id="cfg-wa" placeholder="8421427605"/></div>
+          <div class="fg"><label>Maintenance Mode</label>
+            <select id="cfg-maint">
+              <option value="off">&#127881; Off — Site is live</option>
+              <option value="on">&#9888; On — Maintenance page shown</option>
+            </select>
+          </div>
+          <button class="adm-btn-primary" onclick="saveAppConfig()"><span>Save Configuration &#8594;</span></button>
+          <div class="adm-msg" id="cfg-msg"></div>
+        </div>
+
+        <div>
+          <div class="adm-card" style="margin-bottom:20px;">
+            <div class="card-head"><h3>&#128276; Notification Settings</h3></div>
+            <div class="tgl-list">
+              <div class="tgl-row"><div><strong>New Signup Alert</strong><p>Notify when new user registers</p></div><label class="tgl"><input type="checkbox" id="n-signup" checked/><span class="tgl-sl"></span></label></div>
+              <div class="tgl-row"><div><strong>Payment Received</strong><p>Alert when payment completes</p></div><label class="tgl"><input type="checkbox" id="n-payment" checked/><span class="tgl-sl"></span></label></div>
+              <div class="tgl-row"><div><strong>Expiry Reminder</strong><p>Email users 7 days before expiry</p></div><label class="tgl"><input type="checkbox" id="n-expiry" checked/><span class="tgl-sl"></span></label></div>
+              <div class="tgl-row"><div><strong>Access Request Alert</strong><p>Notify on user access requests</p></div><label class="tgl"><input type="checkbox" id="n-access"/><span class="tgl-sl"></span></label></div>
+              <div class="tgl-row"><div><strong>Block Notification</strong><p>Notify user when account blocked</p></div><label class="tgl"><input type="checkbox" id="n-block"/><span class="tgl-sl"></span></label></div>
+              <div class="tgl-row"><div><strong>Weekly Summary</strong><p>Weekly analytics email to admin</p></div><label class="tgl"><input type="checkbox" id="n-weekly"/><span class="tgl-sl"></span></label></div>
+            </div>
+            <button class="adm-btn-primary" onclick="saveNotifications()"><span>Save Notifications</span></button>
+            <div class="adm-msg" id="notif-msg"></div>
+          </div>
+
+          <div class="adm-card">
+            <div class="card-head"><h3>&#128293; Danger Zone</h3></div>
+            <div class="danger-list">
+              <div class="danger-row">
+                <div><strong>Reset Test Data</strong><p>Clear localStorage, restore default test users</p></div>
+                <button class="btn-danger" onclick="resetTestData()">Reset</button>
+              </div>
+              <div class="danger-row">
+                <div><strong>Export Users CSV</strong><p>Download all user data as CSV</p></div>
+                <button class="adm-btn" onclick="exportAllData()">Export</button>
+              </div>
+              <div class="danger-row">
+                <div><strong>Block All Expired</strong><p>Block every user with expired subscription</p></div>
+                <button class="btn-danger" onclick="blockAllExpired()">Block Expired</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-card" style="margin-top:20px;">
+        <div class="card-head"><h3>&#127758; Firebase Integration Guide</h3></div>
+        <div class="fb-guide">
+          <div class="fb-step"><span>1</span><div>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> and create a new project</div></div>
+          <div class="fb-step"><span>2</span><div>Project Settings &#8594; Add Web App &#8594; Copy the <code>firebaseConfig</code> object</div></div>
+          <div class="fb-step"><span>3</span><div>Enable Authentication: Email/Password provider (Google later)</div></div>
+          <div class="fb-step"><span>4</span><div>Create Firestore Database in production mode</div></div>
+          <div class="fb-step"><span>5</span><div>Paste config into <code>js/firebase-config.js</code> and add your admin email to <code>ADMIN_EMAILS</code></div></div>
+          <div class="fb-step"><span>6</span><div>Replace all <code>MockAuth</code> and <code>MockUsers</code> calls with Firebase equivalents in <code>js/auth.js</code> and <code>js/admin.js</code></div></div>
+          <div class="fb-step"><span>7</span><div>Deploy Firestore security rules from the <code>firestore.rules</code> file in your project</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: POLICY EDITOR ════════════════════════════════ -->
+    <div class="tab-pane" id="tab-policy">
+      <div class="adm-card">
+        <div class="card-head">
+          <h3>&#128196; Policy Editor</h3>
+          <div class="card-actions">
+            <select id="pol-sel" onchange="loadPolicy()">
+              <option value="terms">Terms and Conditions</option>
+              <option value="privacy">Privacy Policy</option>
+              <option value="refund">Refund Policy</option>
+            </select>
+            <button class="adm-btn" onclick="previewPolicy()">&#128065; Preview</button>
+          </div>
+        </div>
+        <div class="info-box info" style="margin-bottom:14px;">Policies are stored locally and shown on policy pages. Use plain text or basic HTML.</div>
+        <div class="fg">
+          <label id="pol-label">Terms and Conditions</label>
+          <textarea id="pol-content" rows="22" placeholder="Enter policy content here..."></textarea>
+        </div>
+        <button class="adm-btn-primary" onclick="savePolicy()"><span>Save Policy &#8594;</span></button>
+        <div class="adm-msg" id="pol-msg"></div>
+      </div>
+    </div>
+
+
+    <!-- MODULE MANAGER TAB -->
+    <div class="tab-pane" id="tab-modules">
+      <div class="adm-card" style="margin-bottom:20px;">
+        <div class="card-head">
+          <h3>&#9680; Module Manager</h3>
+          <div class="card-actions">
+            <button class="adm-btn" onclick="setAllModules(true)">&#9989; Enable All</button>
+            <button class="adm-btn" onclick="setAllModules(false)">&#10060; Disable All</button>
+            <button class="adm-btn-primary" onclick="saveModules()"><span>Save Changes &#8594;</span></button>
+          </div>
+        </div>
+        <div class="info-box info" style="margin-bottom:18px;">
+          Toggle modules ON or OFF for all users. Disabled modules will be hidden in the user dashboard instantly after saving. Users currently on a disabled module will be redirected to the dashboard home.
+        </div>
+        <div class="module-manager-grid" id="module-manager-grid">
+          <!-- Injected by JS -->
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap;">
+          <button class="adm-btn-primary" onclick="saveModules()"><span>Save Changes &#8594;</span></button>
+          <div class="adm-msg" id="mod-msg" style="margin-top:0;"></div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="two-col">
+        <div class="adm-card">
+          <div class="card-head"><h3>Module Statistics</h3></div>
+          <div id="mod-stats" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
+        </div>
+        <div class="adm-card">
+          <div class="card-head"><h3>Quick Info</h3></div>
+          <div class="info-box">
+            <strong>How it works:</strong><br/><br/>
+            &#10003; Changes apply instantly for all users after saving<br/>
+            &#10003; Disabled modules are hidden in the sidebar and content area<br/>
+            &#10003; Users cannot access disabled modules via URL either<br/>
+            &#10003; All module data and calculations are preserved<br/>
+            &#10003; Re-enabling a module restores it immediately<br/><br/>
+            <strong>Tip:</strong> Use this to roll out new modules gradually or disable modules temporarily for maintenance.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end adm-content -->
+</main>
+
+<!-- USER DETAIL MODAL -->
+<div class="modal-overlay" id="user-modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head"><h3 id="modal-title">User Details</h3><button class="modal-x" onclick="closeModal()">&#10005;</button></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- EXTEND MODAL -->
+<div class="modal-overlay" id="ext-modal" onclick="closeExtModal()">
+  <div class="modal-box" style="max-width:360px;" onclick="event.stopPropagation()">
+    <div class="modal-head"><h3>Extend Subscription</h3><button class="modal-x" onclick="closeExtModal()">&#10005;</button></div>
+    <div class="fg" style="padding-top:4px;"><label>Extend by (days)</label><input type="number" id="ext-days" placeholder="e.g. 30 or 365" min="1"/></div>
+    <input type="hidden" id="ext-uid"/>
+    <button class="adm-btn-primary" onclick="doExtend()"><span>Extend Now &#8594;</span></button>
+    <div class="adm-msg" id="ext-msg"></div>
+  </div>
+</div>
+
+<div class="mini-toast" id="mini-toast"></div>
+
+
+<script src="js/admin.js"></script>
+</body>
+</html>

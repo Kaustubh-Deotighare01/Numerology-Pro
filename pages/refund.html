@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refund Policy &#8212; Numerology Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/policy.css"/>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase-auth.js"></script>
+</head>
+<body>
+<nav class="pol-nav">
+  <a href="../index.html">
+    <svg viewBox="0 0 44 44" fill="none" width="22"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+    Numerology Pro
+  </a>
+  <a href="../index.html">&#8592; Back to Home</a>
+</nav>
+<div class="pol-wrap">
+  <h1>Refund Policy</h1>
+  <div class="pol-body" id="pol-body">
+<h3>1. Refund Eligibility</h3>
+<p>You are eligible for a full refund within <strong>7 days</strong> of your subscription being activated, provided you are not satisfied with the service. No questions will be asked.</p>
+<h3>2. How to Request a Refund</h3>
+<p>To request a refund, send an email to <strong>deotigharekaustubh@gmail.com</strong> with the following details:</p>
+<ul>
+  <li>Your registered email address</li>
+  <li>Razorpay Payment ID (available in your payment confirmation email)</li>
+  <li>Reason for the refund (optional but helpful)</li>
+</ul>
+<h3>3. Processing Time</h3>
+<p>Approved refunds are processed within <strong>5 to 7 business days</strong> and credited back to your original payment method (credit card, debit card, UPI, or net banking).</p>
+<h3>4. Non-Refundable Period</h3>
+<p>Refund requests made after 7 days of subscription activation will not be eligible. Manually granted access (trial or gifted access) is non-refundable.</p>
+<h3>5. Exceptional Cases</h3>
+<p>In cases of verified technical issues that prevented you from accessing the platform during your subscription period, refund eligibility may be extended on a case-by-case basis at our discretion.</p>
+<h3>6. Subscription Renewals</h3>
+<p>Subscriptions are not auto-renewed. If you choose to renew, the same 7-day refund policy applies from the date of renewal payment.</p>
+<h3>7. Contact for Refunds</h3>
+<p>Email: <strong>deotigharekaustubh@gmail.com</strong><br/>WhatsApp / Phone: <strong>8421427605</strong></p></div>
+</div>
+<div class="pol-footer">
+  &#169; 2025 Numerology Pro &nbsp;|&nbsp; 8421427605 &nbsp;|&nbsp; deotigharekaustubh@gmail.com
+</div>
+
+<script>
+// Load from admin editor if saved, else show default
+const saved = MockConfig.get('policy_refund');
+if (saved) document.getElementById('pol-body').innerHTML = saved.replace(/\n/g,'<br/>');
+</script>
+</body>
+</html>

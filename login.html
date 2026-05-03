@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In — Numerology Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/auth.css"/>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-auth.js"></script>
+</head>
+<body>
+<style>
+#app-loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .3s;}
+#app-loader.hide{opacity:0;pointer-events:none;}
+.al-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.al-logo svg{width:36px;}
+.al-logo span{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#111827;}
+.al-spin{width:32px;height:32px;border:3px solid #e5e1d8;border-top-color:#C0392B;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<div id="app-loader">
+  <div class="al-logo">
+    <svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+    <span>Numerology Pro</span>
+  </div>
+  <div class="al-spin"></div>
+</div>
+<div class="auth-page">
+
+<!-- LEFT -->
+<div class="auth-left">
+  <a href="index.html" class="back-link">&#8592; Back to Home</a>
+  <div class="al-inner">
+    <div class="al-logo">
+      <div class="al-logo-icon">
+        <svg viewBox="0 0 44 44" fill="none" width="28"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <div><div class="al-brand">Numerology Pro</div><div class="al-sub">Professional Suite</div></div>
+    </div>
+    <h2>Unlock the Science<br/>of Your Numbers</h2>
+    <p>India's most complete numerology platform. 30+ modules, Lo Shu Grid, unlimited reports and full spiritual guidance.</p>
+    <div class="al-features">
+      <div class="al-feat"><span class="af-dot"></span>Name, number and vibration analysis</div>
+      <div class="al-feat"><span class="af-dot"></span>Lo Shu Grid with missing number remedies</div>
+      <div class="al-feat"><span class="af-dot"></span>Gemstones, crystals and Rudraksha</div>
+      <div class="al-feat"><span class="af-dot"></span>Unlimited branded PDF exports</div>
+      <div class="al-feat"><span class="af-dot"></span>Marriage compatibility and remedies</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="auth-right">
+  <div class="auth-card">
+    <div class="auth-tabs" id="auth-tabs">
+      <button class="atab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+      <button class="atab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div class="auth-form active" id="form-signin">
+      <div class="form-heading"><h3>Welcome back</h3><p>Sign in to your Numerology Pro account</p></div>
+      <div class="fgroup">
+        <label>Email Address</label>
+        <input type="email" id="si-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doSignIn()"/>
+      </div>
+      <div class="fgroup">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="si-password" placeholder="Your password" onkeydown="if(event.key==='Enter')doSignIn()"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('si-password')">&#128065;</button>
+        </div>
+      </div>
+      <div class="frow-between">
+        <label class="chk-label"><input type="checkbox" id="si-remember"/> Remember me</label>
+        <button class="link-btn" onclick="switchTab('forgot')">Forgot password?</button>
+      </div>
+      <button class="btn-auth" id="si-btn" onclick="doSignIn()"><span id="si-txt">Sign In</span></button>
+      <div class="auth-msg" id="si-msg"></div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div class="auth-form" id="form-signup">
+      <div class="form-heading"><h3>Create Account</h3><p>Join Numerology Pro today</p></div>
+      <div class="frow-2">
+        <div class="fgroup"><label>First Name</label><input type="text" id="su-fname" placeholder="First name"/></div>
+        <div class="fgroup"><label>Last Name</label><input type="text" id="su-lname" placeholder="Last name"/></div>
+      </div>
+      <div class="fgroup"><label>Email Address</label><input type="email" id="su-email" placeholder="you@example.com"/></div>
+      <div class="fgroup"><label>Mobile Number</label><input type="tel" id="su-mobile" placeholder="10-digit mobile" maxlength="10"/></div>
+      <div class="fgroup">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="su-password" placeholder="Min 6 characters"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('su-password')">&#128065;</button>
+        </div>
+      </div>
+      <div class="fgroup"><label class="chk-label"><input type="checkbox" id="su-terms"/> I agree to the <a href="pages/terms.html" style="color:#C0392B;" target="_blank">Terms and Conditions</a></label></div>
+      <button class="btn-auth" id="su-btn" onclick="doSignUp()"><span id="su-txt">Create Account</span></button>
+      <div class="auth-msg" id="su-msg"></div>
+      <p class="auth-note">After signup, admin reviews and activates your account. You will be notified once access is granted.</p>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="auth-form" id="form-forgot">
+      <button class="back-to-signin" onclick="switchTab('signin')">&#8592; Back to Sign In</button>
+      <div class="form-heading"><h3>Forgot Password?</h3><p>Enter your registered email to receive a password reset link</p></div>
+      <div class="fgroup">
+        <label>Email Address</label>
+        <input type="email" id="fp-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doForgot()"/>
+      </div>
+      <button class="btn-auth" id="fp-btn" onclick="doForgot()"><span id="fp-txt">Send Reset Link</span></button>
+      <div class="auth-msg" id="fp-msg"></div>
+    </div>
+
+    <!-- RESET LINK SENT -->
+    <div class="auth-form" id="form-reset-sent">
+      <div class="success-icon">&#128140;</div>
+      <div class="form-heading" style="text-align:center;">
+        <h3>Check Your Email</h3>
+        <p>A password reset link has been sent to<br/><strong id="sent-email" style="color:#111827;"></strong></p>
+      </div>
+      <div class="reset-info-box">
+        <strong>Email Sent!</strong> A password reset link has been sent to your email address. Click the link in the email to set a new password.<br/><br/>
+        <small style="color:#6b7280;">Didn't receive it? Check your spam folder or try again.</small>
+      </div>
+      <button class="link-btn" style="display:block;text-align:center;margin-top:16px;width:100%;" onclick="switchTab('signin')">&#8592; Back to Sign In</button>
+    </div>
+
+  </div>
+  <div class="auth-footer">
+    <div class="af-logo">
+      <svg viewBox="0 0 44 44" fill="none" width="16"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      Numerology Pro
+    </div>
+    <span>Numerology Pro &nbsp;|&nbsp; 8421427605 &nbsp;|&nbsp; deotigharekaustubh@gmail.com</span>
+  </div>
+</div>
+</div>
+
+
+<script>
+function switchTab(tab){
+  document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
+  const f=document.getElementById('form-'+tab); if(f) f.classList.add('active');
+  const t=document.getElementById('tab-'+tab);  if(t) t.classList.add('active');
+  document.getElementById('auth-tabs').style.display=(tab==='forgot'||tab==='reset-sent')?'none':'flex';
+  document.querySelectorAll('.auth-msg').forEach(m=>{m.textContent='';m.className='auth-msg';});
+}
+function showMsg(id,text,type='error'){const el=document.getElementById(id);el.textContent=text;el.className='auth-msg '+type;}
+function setBusy(btnId,txtId,busy,label){const b=document.getElementById(btnId);b.disabled=busy;document.getElementById(txtId).textContent=busy?'Please wait...':label;}
+function togglePw(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';}
+
+async function doSignIn(){
+  const email=document.getElementById('si-email').value.trim();
+  const pass=document.getElementById('si-password').value;
+  if(!email||!pass){showMsg('si-msg','Please enter your email and password.');return;}
+  setBusy('si-btn','si-txt',true,'Sign In');
+  try {
+    const r=await MockAuth.login(email,pass);
+    setBusy('si-btn','si-txt',false,'Sign In');
+    if(!r.ok){showMsg('si-msg',r.error);return;}
+    if(document.getElementById('si-remember').checked){
+      localStorage.setItem('np_remember',JSON.stringify({email}));
+    }else{localStorage.removeItem('np_remember');}
+    const u=r.user;
+    if(MockAuth.isAdmin(u)){window.location.href='admin.html';return;}
+    const s=MockAuth.getStatus(u);
+    if(s==='active'){window.location.href='dashboard.html';return;}
+    if(s==='expired'||s==='pending'){window.location.href='payment.html';return;}
+    if(s==='blocked'){await auth.signOut();showMsg('si-msg','Your account has been blocked. Contact: deotigharekaustubh@gmail.com','warning');return;}
+  } catch(e){
+    setBusy('si-btn','si-txt',false,'Sign In');
+    showMsg('si-msg','Something went wrong. Please try again.');
+  }
+}
+
+async function doSignUp(){
+  const fname=document.getElementById('su-fname').value.trim();
+  const lname=document.getElementById('su-lname').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const mobile=document.getElementById('su-mobile').value.trim();
+  const pass=document.getElementById('su-password').value;
+  const terms=document.getElementById('su-terms').checked;
+  if(!fname||!email||!pass){showMsg('su-msg','Please fill all required fields.');return;}
+  if(pass.length<6){showMsg('su-msg','Password must be at least 6 characters.');return;}
+  if(!terms){showMsg('su-msg','Please accept the Terms and Conditions.');return;}
+  setBusy('su-btn','su-txt',true,'Create Account');
+  try {
+    const r=await MockAuth.register({firstName:fname,lastName:lname,email,mobile,password:pass});
+    setBusy('su-btn','su-txt',false,'Create Account');
+    if(!r.ok){showMsg('su-msg',r.error);return;}
+    showMsg('su-msg','Account created! Redirecting to payment...','success');
+    setTimeout(()=>{ window.location.href='payment.html'; },1500);
+  } catch(e){
+    setBusy('su-btn','su-txt',false,'Create Account');
+    showMsg('su-msg','Something went wrong. Please try again.');
+  }
+}
+
+async function doForgot(){
+  const email=document.getElementById('fp-email').value.trim();
+  if(!email){showMsg('fp-msg','Please enter your email address.');return;}
+  setBusy('fp-btn','fp-txt',true,'Send Reset Link');
+  const r = await MockAuth.forgotPassword(email);
+  setBusy('fp-btn','fp-txt',false,'Send Reset Link');
+  if(!r.ok){showMsg('fp-msg',r.error);return;}
+  document.getElementById('sent-email').textContent=email;
+  switchTab('reset-sent');
+}
+
+function gotoReset(){
+  // Firebase sends real email — no demo redirect needed
+  showMsg('fp-msg','Please check your email inbox for the reset link.','info');
+}
+
+window.addEventListener('load', ()=>{
+    const _l=document.getElementById('app-loader');
+  if(_l){_l.classList.add('hide');setTimeout(()=>_l.remove(),350);}
+  if(window.location.hash==='#signup') switchTab('signup');
+  if(window.location.hash==='#forgot') switchTab('forgot');
+  const rem=localStorage.getItem('np_remember');
+  if(rem){const d=JSON.parse(rem);document.getElementById('si-email').value=d.email||'';}
+  // If already logged in silently redirect
+  auth.onAuthStateChanged(async firebaseUser => {
+    if (!firebaseUser) { localStorage.removeItem('np_user'); return; }
+    const user = await MockAuth.refreshUser();
+    if (!user) return;
+    if (MockAuth.isAdmin(user)) { window.location.href = 'admin.html'; return; }
+    const s = MockAuth.getStatus(user);
+    if (s === 'active')                      { window.location.href = 'dashboard.html'; return; }
+    if (s === 'pending' || s === 'expired')  { window.location.href = 'payment.html';   return; }
+  });
+});
+</script>
+</body>
+</html>

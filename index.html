@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Numerology Pro — Professional Numerology Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/home.css"/>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase-auth.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="hdr">
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <div>
+        <span class="logo-name">Numerology Pro</span>
+        <span class="logo-sub">Professional Suite</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="header-actions" id="hdr-actions">
+      <a href="login.html" class="btn-ghost">Sign In</a>
+      <a href="login.html#signup" class="btn-red-sm">Get Started</a>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </div>
+  <div class="header-gold-bar"></div>
+  <div class="mobile-nav" id="mnav">
+    <a href="#features" onclick="toggleNav()">Features</a>
+    <a href="#how-it-works" onclick="toggleNav()">How It Works</a>
+    <a href="#pricing" onclick="toggleNav()">Pricing</a>
+    <a href="#faq" onclick="toggleNav()">FAQ</a>
+    <a href="login.html">Sign In</a>
+    <a href="login.html#signup" class="mobile-cta">Get Started Free</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="container">
+    <div class="hero-badge">&#10022; India's Most Complete Numerology Platform</div>
+    <h1 class="hero-title">Discover the Hidden Power<br/>of <em>Your Numbers</em></h1>
+    <p class="hero-desc">Numerology Pro is a professional-grade suite for practitioners and individuals. Analyse names, dates, numbers — and receive complete personalised remedies in one powerful platform.</p>
+    <div class="hero-actions">
+      <a href="login.html#signup" class="btn-primary-lg">Start Free Trial &#8594;</a>
+      <a href="#features" class="btn-outline-lg">Explore 30+ Modules</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><span class="hs-num">30+</span><span class="hs-lbl">Modules</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs"><span class="hs-num">&#8734;</span><span class="hs-lbl">Reports</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs"><span class="hs-num">Lo Shu</span><span class="hs-lbl">Grid</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs"><span class="hs-num">PDF</span><span class="hs-lbl">Export</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs"><span class="hs-num">100%</span><span class="hs-lbl">Accurate</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED -->
+<div class="trusted-bar">
+  <div class="container">
+    <span class="tb-label">Trusted by numerology practitioners across India</span>
+    <div class="tb-items">
+      <span>&#10022; Vedic Numerology</span><span>&#10022; Chaldean System</span>
+      <span>&#10022; Pythagorean System</span><span>&#10022; Lo Shu Grid</span>
+      <span>&#10022; Gemstone Therapy</span><span>&#10022; Mantra Science</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-badge">What We Offer</div>
+      <h2>Everything You Need in One Suite</h2>
+      <p>30+ powerful modules covering every aspect of life — from Lo Shu Grid to marriage compatibility, career alignment to spiritual remedies.</p>
+    </div>
+    <div class="features-grid">
+      <div class="fc featured"><div class="fc-icon">&#9632;</div><h3>Lo Shu Grid Analysis</h3><p>Complete 3x3 Lo Shu Grid with missing number remedies, repeated number analysis, and personalised life path insights based on date of birth.</p><ul><li>Visual 3x3 grid with energy mapping</li><li>Missing number detection and remedy</li><li>Repeated number deep analysis</li></ul></div>
+      <div class="fc featured"><div class="fc-icon">&#10022;</div><h3>Name Vibration Analysis</h3><p>Chaldean and Pythagorean name values with before/after correction comparison, life path alignment, soul urge and personality numbers.</p><ul><li>Both Chaldean and Pythagorean</li><li>Before/after spelling comparison</li><li>Life path compatibility check</li></ul></div>
+      <div class="fc"><div class="fc-icon">&#9998;</div><h3>Name Correction</h3><p>Spelling suggestions to align name vibration with desired outcome — career, wealth, relationships, health, or fame.</p></div>
+      <div class="fc"><div class="fc-icon">&#9825;</div><h3>Baby Name Recommendations</h3><p>Auspicious names for newborns based on Life Path number and parental numerology compatibility with starting letter filter.</p></div>
+      <div class="fc"><div class="fc-icon">&#9873;</div><h3>Business Name Analysis</h3><p>Business name vibration check with branding color, logo geometry, launch day guidance for maximum commercial success energy.</p></div>
+      <div class="fc"><div class="fc-icon">&#9670;</div><h3>Mobile Number Analysis</h3><p>Vibration check for your mobile number with SIM selection guidance comparing up to 3 numbers for best personal match.</p></div>
+      <div class="fc"><div class="fc-icon">&#8962;</div><h3>House Number Analysis</h3><p>Energy compatibility for your home number with owner. Includes wall color, crystal placement, and nameplate correction remedies.</p></div>
+      <div class="fc"><div class="fc-icon">&#9702;</div><h3>Vehicle Number Analysis</h3><p>Registration vibration check with protective mantra, tassel color recommendation, and best servicing day guidance.</p></div>
+      <div class="fc"><div class="fc-icon">@</div><h3>Email and Username</h3><p>Numerological vibration of your email address and social media usernames for optimised digital identity.</p></div>
+      <div class="fc"><div class="fc-icon">&#9998;</div><h3>Signature Analysis</h3><p>Style analysis with correction guidance, ink color, stroke direction and 21-day practice ritual for energy alignment.</p></div>
+      <div class="fc"><div class="fc-icon">&#9733;</div><h3>Lucky and Unlucky Numbers</h3><p>Personalised lucky number identification with avoidance suggestions for PINs, dates, amounts, and key decisions.</p></div>
+      <div class="fc"><div class="fc-icon">&#9711;</div><h3>Color Therapy</h3><p>Lucky colors based on Life Path and ruling planet for clothing, workspace, home decor, and important occasions.</p></div>
+      <div class="fc"><div class="fc-icon">&#9719;</div><h3>Lucky Dates and Timing</h3><p>Auspicious dates for launches, marriage, property, surgery, travel, and investments based on personal cycles.</p></div>
+      <div class="fc"><div class="fc-icon">&#9670;</div><h3>Gemstone Recommendations</h3><p>Power gemstones matched to your Life Path with wearing ritual, finger, weight, and energizing instructions.</p></div>
+      <div class="fc"><div class="fc-icon">&#10023;</div><h3>Crystal Healing</h3><p>Specific crystals for numerological imbalances — confidence, love, financial blocks, anxiety, spiritual disconnection.</p></div>
+      <div class="fc"><div class="fc-icon">&#8859;</div><h3>Rudraksha Guidance</h3><p>Mukhi-based Rudraksha with deity association, wearing ritual, and challenge-specific guidance for 8 life areas.</p></div>
+      <div class="fc"><div class="fc-icon">&#9775;</div><h3>Mantra and Remedies</h3><p>Personalised planetary mantras, purpose-based chanting, and 40-day Mandala practice with diya ritual guidance.</p></div>
+      <div class="fc"><div class="fc-icon">&#11041;</div><h3>Yantra Suggestions</h3><p>Sacred geometry Yantra with placement direction, material, energizing ritual, and weekly maintenance guide.</p></div>
+      <div class="fc"><div class="fc-icon">&#9671;</div><h3>Marriage Compatibility</h3><p>Full compatibility score with Life Path, Destiny analysis, percentage rating and detailed correction remedies.</p></div>
+      <div class="fc"><div class="fc-icon">&#10010;</div><h3>Health Insights</h3><p>Health vulnerabilities by Life Path — diet tips, healing crystals, wellness mantras and Ayurvedic guidance.</p></div>
+      <div class="fc"><div class="fc-icon">&#8734;</div><h3>Energy Balancing System</h3><p>Holistic prescription combining numbers, colors, crystals, Rudraksha, mantras and Yantra for specific life problems.</p></div>
+      <div class="fc featured"><div class="fc-icon">&#9670;</div><h3>90-Day Action Plan</h3><p>Personalised roadmap divided into Foundation, Activation and Momentum phases with daily non-negotiables and milestone rituals.</p><ul><li>Phase-wise 30-day targets</li><li>Daily ritual checklist</li><li>Monthly milestone reviews</li></ul></div>
+      <div class="fc"><div class="fc-icon">&#9788;</div><h3>Daily, Monthly and Yearly Plans</h3><p>Personal cycle numbers for today, this month and year with tailored daily remedies and cycle-specific guidance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-works" id="how-it-works">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-badge">Simple Process</div>
+      <h2>How Numerology Pro Works</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><h3>Create Account</h3><p>Sign up and get access after admin activation to all 30+ modules including Lo Shu Grid.</p></div>
+      <div class="step-arr">&#8594;</div>
+      <div class="step"><div class="step-n">02</div><h3>Enter Your Details</h3><p>Enter your name, date of birth or any number. All core numbers are calculated instantly.</p></div>
+      <div class="step-arr">&#8594;</div>
+      <div class="step"><div class="step-n">03</div><h3>Get Full Analysis</h3><p>Receive Lo Shu Grid, name analysis, remedies, mantras, gemstones and complete guidance.</p></div>
+      <div class="step-arr">&#8594;</div>
+      <div class="step"><div class="step-n">04</div><h3>Export PDF Report</h3><p>Download a professional branded PDF to share with clients. Unlimited reports included.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-badge">Simple Pricing</div>
+      <h2>One Plan. Everything Included.</h2>
+      <p>No hidden fees. No report limits. Full access to all current and future modules including Lo Shu Grid.</p>
+    </div>
+    <div class="pricing-wrap">
+      <div class="pricing-card">
+        <div class="pc-badge">Most Popular</div>
+        <div class="pc-name">Professional Annual</div>
+        <div class="pc-price"><span class="pc-cur">&#8377;</span><span class="pc-amt" id="display-price">1,000</span><span class="pc-per">/year</span></div>
+        <div class="pc-save">Save 60% vs monthly billing</div>
+        <ul class="pc-features" id="pc-feat-list">
+          <li><span>&#10003;</span>Full access to all 30+ modules</li>
+          <li><span>&#10003;</span>Lo Shu Grid analysis and remedies</li>
+          <li><span>&#10003;</span>Unlimited PDF report exports</li>
+          <li><span>&#10003;</span>Name, number and vibration analysis</li>
+          <li><span>&#10003;</span>Gemstone, crystal and Rudraksha guidance</li>
+          <li><span>&#10003;</span>Marriage and relationship compatibility</li>
+          <li><span>&#10003;</span>90-day personalised action plan</li>
+          <li><span>&#10003;</span>Daily, monthly and yearly remedy plans</li>
+          <li><span>&#10003;</span>Complete energy balancing system</li>
+          <li><span>&#10003;</span>Priority email support</li>
+          <li><span>&#10003;</span>All future modules included</li>
+        </ul>
+        <a href="login.html#signup" class="btn-pricing">Get Started Now &#8594;</a>
+        <p class="pc-note">Secure payment via Razorpay &nbsp;&#183;&nbsp; Instant activation</p>
+      </div>
+    </div>
+    <div class="pricing-guarantee"><span>&#128274;</span><p>100% satisfaction guaranteed. Not happy within 7 days? Full refund, no questions asked.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="sec-head"><div class="sec-badge">FAQ</div><h2>Frequently Asked Questions</h2></div>
+    <div class="faq-list">
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">What is Lo Shu Grid and is it included? <span>+</span></div><div class="faq-a">Yes! Lo Shu Grid is a 3x3 magic square from Vedic and Chinese numerology. Our suite includes a complete visual Lo Shu Grid analysis — with missing number identification, repeated number meanings, and personalised remedies for each.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Which numerology systems are used? <span>+</span></div><div class="faq-a">Numerology Pro uses Chaldean and Pythagorean systems for name analysis, Lo Shu Grid for grid analysis, and Vedic numerology for planetary associations, gemstones, Rudraksha, mantras, and remedies.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">How many reports can I generate? <span>+</span></div><div class="faq-a">Unlimited. There are absolutely no limits on the number of analyses or PDF reports you can generate with your annual subscription.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I use this for my numerology clients? <span>+</span></div><div class="faq-a">Absolutely. Numerology Pro is designed for both personal use and professional numerology practitioners. Generate branded PDF reports for clients with ease.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">How do I get access after signing up? <span>+</span></div><div class="faq-a">After signing up, the admin reviews your account and grants access manually. This typically takes a few hours. You will be notified once your account is activated.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is there a refund policy? <span>+</span></div><div class="faq-a">Yes. If you are not satisfied within 7 days of activation, contact us for a full refund with no questions asked.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <div class="container">
+    <h2>Ready to Unlock the Power of Your Numbers?</h2>
+    <p>Join practitioners and individuals using Numerology Pro for life-changing insights.</p>
+    <a href="login.html#signup" class="btn-primary-lg">Start Your Journey &#8594;</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="contact">
+  <div class="footer-gold-bar"></div>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">
+        <svg viewBox="0 0 44 44" fill="none" width="32"><circle cx="22" cy="10" r="6" fill="#C0392B"/><path d="M6 38 Q6 22 14 22 Q22 22 22 30 Q22 22 30 22 Q38 22 38 38" stroke="#C0392B" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+        <div><div class="footer-brand">Numerology Pro</div><div class="footer-sub">Professional Numerology Suite</div></div>
+      </div>
+      <div class="footer-contact-info"><div>&#128222; 8421427605</div><div>&#9993; deotigharekaustubh@gmail.com</div></div>
+    </div>
+    <div>
+      <div class="footer-links-title">Quick Links</div>
+      <div class="footer-links"><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="login.html">Sign In</a><a href="login.html#signup">Sign Up</a></div>
+    </div>
+    <div>
+      <div class="footer-links-title">Legal</div>
+      <div class="footer-links"><a href="pages/terms.html">Terms and Conditions</a><a href="pages/privacy.html">Privacy Policy</a><a href="pages/refund.html">Refund Policy</a></div>
+    </div>
+    <div>
+      <div class="footer-links-title">Contact</div>
+      <div class="footer-contact-info"><div>For support or queries, reach out directly via email or WhatsApp.</div><div style="margin-top:8px;"><strong>WhatsApp:</strong> 8421427605</div></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Numerology Pro &nbsp;|&nbsp; 8421427605 &nbsp;|&nbsp; deotigharekaustubh@gmail.com</span>
+    <span>&#169; 2025 Numerology Pro. All rights reserved.</span>
+  </div>
+</footer>
+
+
+<script>
+function toggleNav(){document.getElementById('mnav').classList.toggle('open');}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('mnav').classList.remove('open');}
+  });
+});
+window.addEventListener('scroll',()=>{
+  document.getElementById('hdr').style.boxShadow=window.scrollY>10?'0 2px 20px rgba(0,0,0,.1)':'';
+});
+window.addEventListener('load',()=>{
+  const p=MockConfig.getPricing();
+  if(p&&p.annual){const el=document.getElementById('display-price');if(el)el.textContent=p.annual.toLocaleString('en-IN');}
+  const feats=MockConfig.getFeatures();
+  if(feats&&feats.length){const ul=document.getElementById('pc-feat-list');if(ul)ul.innerHTML=feats.map(f=>`<li><span>&#10003;</span>${f}</li>`).join('');}
+  const user=MockAuth.currentUser();
+  if(user){document.getElementById('hdr-actions').innerHTML=`<a href="${MockAuth.isAdmin(user)?'admin.html':'dashboard.html'}" class="btn-red-sm">Go to Dashboard</a>`;}
+});
+</script>
+</body>
+</html>

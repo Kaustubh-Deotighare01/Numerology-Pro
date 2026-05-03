@@ -1,0 +1,22 @@
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/payment", "destination": "/payment.html" },
+    { "source": "/reset-password", "destination": "/reset-password.html" },
+    { "source": "/pages/terms", "destination": "/pages/terms.html" },
+    { "source": "/pages/privacy", "destination": "/pages/privacy.html" },
+    { "source": "/pages/refund", "destination": "/pages/refund.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ]
+}
